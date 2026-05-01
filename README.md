@@ -29,7 +29,7 @@ Most network scanners are boring. WhyNot-StadtNuke is not.
 
 ## 📸 Demo
 
-*Add your screenshot here. Right now it looks like Munich street names on a map.*
+*@screenshot.png*
 
 ## 🚀 Quick Start
 
@@ -100,10 +100,7 @@ WhyNot‑ = Humble confidence. Why not build a city nuke on a Tuesday?
 MIT – Do whatever you want. Just keep the sarcasm intact.
 
 👤 Author
-Raju – Aspiring network engineer / SOC analyst
-Building extreme tools for a German Ausbildung.
-
-https://img.shields.io/badge/GitHub-WhyNot--StadtNuke-black
+Raju
 
 🙏 Acknowledgements
 InternetDB – Free Shodan data

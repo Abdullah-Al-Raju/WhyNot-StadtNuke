@@ -1,0 +1,17 @@
+# Virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Map cache and local files
+*.html
+*.json
+!example.json
+
+# IDE junk
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db

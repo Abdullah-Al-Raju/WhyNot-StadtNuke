@@ -29,7 +29,9 @@ Most network scanners are boring. WhyNot-StadtNuke is not.
 
 ## 📸 Demo
 
-*@screenshot.png*
+![Munich street map showing discovered devices](screenshot.png)
+
+*Live map output from scanning Munich – each marker is an internet-connected device.*
 
 ## 🚀 Quick Start
 

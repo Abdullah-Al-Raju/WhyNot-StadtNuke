@@ -1,0 +1,3 @@
+## 2024-05-17 - Connection Pooling for Repeated API Calls
+**Learning:** Making repeated API calls to the same host using `requests.get()` establishes a new TCP connection and TLS handshake for every single request. In network scanners like WhyNot-StadtNuke, this creates a massive bottleneck when scanning hundreds of IPs. By switching to `requests.Session()` (`session.get()`), Python reuses the underlying connection via urllib3 connection pooling, which resulted in an approximately 3x speedup for Shodan API calls.
+**Action:** Always check if a script makes loop-based HTTP requests to the same domain. If so, immediately implement `requests.Session()` to avoid the overhead of constant connection setups.

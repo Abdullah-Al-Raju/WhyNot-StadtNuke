@@ -4,6 +4,9 @@ import json
 import time
 from ipaddress import ip_network
 
+# ⚡ Bolt Optimization: Use a global session to pool TCP connections
+session = requests.Session()
+
 CITY_NAME = "Munich"
 
 CITY_RANGES = {
@@ -15,7 +18,7 @@ CITY_RANGES = {
 def query_internetdb(ip):
     url = f"https://internetdb.shodan.io/{ip}"
     try:
-        resp = requests.get(url, timeout=5)
+        resp = session.get(url, timeout=5)
         if resp.status_code == 200:
             return resp.json()
     except:
@@ -50,10 +53,10 @@ def main():
         devices = scan_range(cidr)
         all_devices.extend(devices)
         print(f"   Found {len(devices)} devices")
-    
+
     with open(f"{CITY_NAME}_stadtnuke.json", "w") as f:
         json.dump(all_devices, f, indent=2)
-    
+
     print(f"\n✅ Saved {len(all_devices)} devices to {CITY_NAME}_stadtnuke.json")
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 WhyNot-StadtNuke WORLDWIDE - Scan any country or ISP
-Usage: 
+Usage:
   python stadtnuke_worldwide.py --country "Bangladesh"
   python stadtnuke_worldwide.py --country "Japan"
   python stadtnuke_worldwide.py --asn "AS45609"
@@ -13,6 +13,10 @@ import time
 import argparse
 import sys
 from ipaddress import ip_network
+
+# ⚡ Bolt Optimization: Use a global session to pool TCP connections
+# This avoids the overhead of establishing a new connection/TLS handshake for every IP.
+session = requests.Session()
 
 # ---------------- CONFIG ----------------
 MAX_IPS_PER_RANGE = 30
@@ -26,7 +30,7 @@ def get_ranges_for_country(country_name):
     """
     print(f"[*] Looking up IP ranges for country: {country_name}...")
     ranges = []
-    
+
     # Convert country name to country code (simple mapping for common ones)
     country_codes = {
         "bangladesh": "BD", "india": "IN", "japan": "JP", "germany": "DE",
@@ -34,11 +38,11 @@ def get_ranges_for_country(country_name):
         "australia": "AU", "brazil": "BR", "china": "CN", "russia": "RU"
     }
     country_code = country_codes.get(country_name.lower(), country_name.upper())
-    
+
     try:
         # Query RIPE Stat for all ranges in this country
         url = f"https://stat.ripe.net/data/country-resource-list/data.json?resource={country_code}"
-        resp = requests.get(url, timeout=15)
+        resp = session.get(url, timeout=15)
         if resp.status_code == 200:
             data = resp.json()
             if 'data' in data and 'resources' in data['data']:
@@ -48,11 +52,11 @@ def get_ranges_for_country(country_name):
                     print(f"    Found range: {cidr}")
     except Exception as e:
         print(f"    [!] API error: {e}")
-    
+
     if not ranges:
         print(f"    [!] No ranges found. Using fallback.")
         ranges = ["8.8.8.0/24"]
-    
+
     return ranges
 
 # ---------------- FUNCTION: Get IP ranges for an ASN ----------------
@@ -62,13 +66,13 @@ def get_ranges_for_asn(asn):
     """
     print(f"[*] Looking up IP ranges for ASN: {asn}...")
     ranges = []
-    
+
     # Clean ASN format
     asn_clean = asn.upper().replace('AS', '')
-    
+
     try:
         url = f"https://stat.ripe.net/data/asn-geo/data.json?resource=AS{asn_clean}"
-        resp = requests.get(url, timeout=15)
+        resp = session.get(url, timeout=15)
         if resp.status_code == 200:
             data = resp.json()
             if 'data' in data and 'prefixes' in data['data']:
@@ -78,18 +82,18 @@ def get_ranges_for_asn(asn):
                         print(f"    Found range: {item['prefix']}")
     except Exception as e:
         print(f"    [!] API error: {e}")
-    
+
     if not ranges:
         print(f"    [!] No ranges found for {asn}")
         ranges = ["8.8.8.0/24"]
-    
+
     return ranges
 
 # ---------------- FUNCTION: Query InternetDB ----------------
 def query_internetdb(ip):
     url = f"https://internetdb.shodan.io/{ip}"
     try:
-        resp = requests.get(url, timeout=5)
+        resp = session.get(url, timeout=5)
         if resp.status_code == 200:
             return resp.json()
     except:
@@ -103,7 +107,7 @@ def scan_range(cidr, max_ips=MAX_IPS_PER_RANGE):
         net = ip_network(cidr, strict=False)
     except:
         return []
-    
+
     found = []
     count = 0
     for ip in net.hosts():
@@ -146,7 +150,7 @@ def main():
     parser.add_argument('--asn', help='ASN number (e.g., "AS45609")')
     parser.add_argument('--max-ips', type=int, default=30)
     args = parser.parse_args()
-    
+
     if not args.country and not args.asn:
         print("Error: Specify --country OR --asn")
         print("Examples:")
@@ -154,16 +158,16 @@ def main():
         print("  python stadtnuke_worldwide.py --country Japan")
         print("  python stadtnuke_worldwide.py --asn AS45609")
         sys.exit(1)
-    
+
     if args.country:
         target = f"Country: {args.country}"
         ranges = get_ranges_for_country(args.country)
     else:
         target = f"ASN: {args.asn}"
         ranges = get_ranges_for_asn(args.asn)
-    
+
     print(f"\n💥 WhyNot-StadtNuke WORLDWIDE – scanning {target}...")
-    
+
     all_devices = []
     for cidr in ranges:
         devices = scan_range(cidr, args.max_ips)
@@ -172,11 +176,11 @@ def main():
         if len(all_devices) >= 100:  # Limit total for performance
             print("   Reached device limit (100). Stopping.")
             break
-    
+
     output_file = f"{target.replace(' ', '_').replace(':', '')}_worldwide.json"
     with open(output_file, "w") as f:
         json.dump(all_devices, f, indent=2)
-    
+
     print(f"\n✅ Saved {len(all_devices)} devices to {output_file}")
     sarcastic_report(all_devices, target)
 

@@ -10,11 +10,14 @@ import argparse
 import random
 import requests
 
+# ⚡ Bolt Optimization: Reuse HTTP connections
+session = requests.Session()
+
 def get_country_coords(country_name):
     """Get center coordinates for any country using free Nominatim API"""
     try:
         url = f"https://nominatim.openstreetmap.org/search?q={country_name}&format=json&limit=1"
-        resp = requests.get(url, headers={'User-Agent': 'WhyNot-StadtNuke/1.0'}, timeout=10)
+        resp = session.get(url, headers={'User-Agent': 'WhyNot-StadtNuke/1.0'}, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
             if data:
@@ -54,12 +57,12 @@ for idx, dev in enumerate(devices[:100]):
     # Random offset within ~50km range
     lat = center[0] + random.uniform(-0.5, 0.5)
     lon = center[1] + random.uniform(-0.5, 0.5)
-    
+
     color = 'red' if dev.get('vulns') and len(dev['vulns']) > 0 else 'green'
     popup_text = f"<b>IP:</b> {dev['ip']}<br><b>Ports:</b> {dev['ports'][:4]}<br><b>Vulns:</b> {len(dev.get('vulns', []))}"
-    
+
     folium.Marker(
-        [lat, lon], 
+        [lat, lon],
         popup=folium.Popup(popup_text, max_width=300),
         icon=folium.Icon(color=color)
     ).add_to(m)

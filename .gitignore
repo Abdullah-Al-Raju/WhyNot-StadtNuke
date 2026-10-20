@@ -7,6 +7,7 @@ __pycache__/
 *.html
 *.json
 !example.json
+!data/*.json
 
 # IDE junk
 .vscode/

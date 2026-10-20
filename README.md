@@ -1,180 +1,228 @@
-# 💥 WhyNot-StadtNuke
+<!--
+SEO Metadata & Indexing Information
+Primary Keywords: network census, attack surface management, OSINT reconnaissance, Shodan InternetDB, port scanner, network security steganography, Folium Leaflet mapping, cybersecurity telemetry, vulnerability scanner, CVE assessment
+Author: Abduallah Al Raju
+Repository: https://github.com/Abdullah-Al-Raju/WhyNot-StadtNuke
+-->
 
-**Because sometimes you just want to nuke a city – politely.**
+# WhyNot-StadtNuke
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+**A High-Performance Network Attack-Surface Census and Geospatial Intelligence Framework**
+
+[![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![Topic: Cybersecurity](https://img.shields.io/badge/topic-cybersecurity-red.svg)](https://github.com/Abdullah-Al-Raju/WhyNot-StadtNuke)
+[![Topic: OSINT](https://img.shields.io/badge/topic-OSINT-orange.svg)](https://github.com/Abdullah-Al-Raju/WhyNot-StadtNuke)
+[![Topic: Attack Surface](https://img.shields.io/badge/topic-attack--surface-purple.svg)](https://github.com/Abdullah-Al-Raju/WhyNot-StadtNuke)
 
-> A **worldwide** network census tool that uses Shodan's free InternetDB API to discover internet-connected devices in any country, generate interactive maps, and produce sarcastic security reports.
+WhyNot-StadtNuke is a network attack-surface discovery and reconnaissance suite that surveys municipal, national, or enterprise IP allocations without requiring expensive Shodan API subscription tiers. Operating through asynchronous queries against Shodan's free InternetDB API and local routing registries, it discovers active internet-connected hosts, maps exposed services and cataloged CVE vulnerabilities, and renders interactive geospatial intelligence maps.
 
----
-
-## 🎯 Why This Exists
-
-Most network scanners are boring, expensive, or both. WhyNot-StadtNuke is none of those.
-
-| Feature | WhyNot-StadtNuke | Others |
-|---------|------------------|--------|
-| **Cost** | $0 (free APIs only) | $$$ API keys |
-| **Rate Limits** | None (InternetDB) | Strict (100-1000 results/month) |
-| **Worldwide** | Any country | Limited to paid tiers |
-| **Sarcasm** | ✅ Built-in | ❌ Too serious |
+Designed and developed by **Abduallah Al Raju**, this framework serves as an automated attack-surface profiling engine for Security Operations Center (SOC) analysts, penetration testers, and security researchers evaluating municipal and regional cyber hygiene.
 
 ---
 
-## ✨ Features
+## Tactical Web Radar & Visual Dashboard
 
-| Feature | Description |
-|---------|-------------|
-| 🌍 **Worldwide Scanning** | Scan any country: `--country "Bangladesh"`, `--country "Japan"` |
-| 🏢 **ISP/ASN Scanning** | Scan specific providers: `--asn "AS45609"` |
-| 🗺️ **Interactive Maps** | Single-country OR global merged map |
-| 🟢 **Color-Coded** | Green = safe, Red = vulnerabilities, Purple = approximate |
-| 🤖 **Sarcastic Report** | Terminal output that roasts network security |
-| 🔗 **Shodan InternetDB** | Unlimited free queries, no API key needed |
-| ⏰ **GitHub Actions Ready** | Auto-scan daily for free |
+![WhyNot-StadtNuke Web Radar Dashboard](web-radar.png)
 
----
+WhyNot-StadtNuke includes an interactive web radar operating on FastAPI and WebSockets, rendering live endpoint telemetry, threat score meters, and interactive Leaflet maps:
 
-## 📸 Demo
+```bash
+python3 stadtnuke.py web --port 8080 --host 127.0.0.1
+```
 
-### Single Country Map (Bangladesh)
-![Bangladesh Scan](screenshot.png)
+Access the visual dashboard at `http://127.0.0.1:8080` in any modern web browser.
 
-### Worldwide Merged Map
-![Worldwide Global Map](screenshot-worldwide.png)
+### Web Radar Capabilities
 
-*All devices from Bangladesh, Japan, Germany, and more on ONE map.*
+- **Real-Time Endpoint Streaming**: Streams newly surveyed devices directly into the UI over WebSockets as queries complete.
+- **Interactive OpenStreetMap Radar**: Plots live color-coded markers (Critical, High, Medium, Low) centered over the target city or country.
+- **Attack Surface Telemetry Counter**: Tracks surveyed hosts, vulnerable nodes, critical port exposures, and calculates a normalized Threat Score (0 to 100).
+- **Defense Roast Engine**: Analyzes exposed service configurations and generates empirical, sarcastic security audit feedback.
+- **Export Pipeline**: Generates standalone Folium HTML maps and exports structured JSON datasets with one click.
 
 ---
 
-## 🚀 Quick Start
+## System Architecture
 
-### Prerequisites
+```
+User CLI / Tactical Web UI
+         |
+    stadtnuke.py (Unified Controller)
+         |
+    stadtnuke_core.py (Census Engine)
+    +-----------------------------------------------+
+    | 1. Target Resolver (data/subnets.json + RIPE) |
+    | 2. Stratified Host Sampler (Subnet Boundary)  |
+    | 3. Async InternetDB Worker Pool               |
+    | 4. Risk Scorer (data/ports.json + CVEs)       |
+    | 5. Offline Simulation Engine                  |
+    +-----------------------------------------------+
+         |
+    stadtnuke_map.py (Geospatial Clustering Engine)
+         |
+    Output Artifacts: HTML Map, JSON Dataset, Sarcastic Audit
+```
+
+---
+
+## Key Technical Features
+
+### 1. Offline Subnet Intelligence
+The framework includes a built-in subnet database (`data/subnets.json`) covering 100+ major global metropolitan areas (Munich, Berlin, Frankfurt, Tokyo, London, Paris, New York, Dhaka, Singapore, Sydney, etc.) and country-level IP prefixes. It eliminates dependency on flaky external routing APIs while maintaining fallback resolution.
+
+### 2. Stratified Host Sampling
+Rather than inefficient sequential scanning of contiguous IP addresses (e.g. `.1` to `.50`), the engine applies stratified sampling and gateway boundary probing across entire `/16`, `/20`, or `/22` blocks to maximize discovery density across enterprise and municipal networks.
+
+### 3. Asynchronous Concurrent Engine
+Multi-threaded worker pool querying Shodan InternetDB with token-bucket pacing and connection pooling, surveying hundreds of candidate IP endpoints in seconds without tripping rate-limiting blocks.
+
+### 4. Zero-Key Geospatial Mapping
+Generates standalone HTML maps using Folium and Leaflet `MarkerCluster` with OpenStreetMap base layers, completely independent of commercial tile API keys. Duplicate geographic coordinates receive micro-jitter offsets ($\pm 150$ meters) to prevent stacked markers without altering true municipal placement.
+
+### 5. Sarcastic Defense Audit Roaster
+Calculates threat scores based on exposed sensitive ports (Telnet 23, SMB 445, ADB 5555, Redis 6379, DICOM 104, SCADA Modbus 502, RTSP 554) and active CVE vulnerabilities, outputting actionable security analysis wrapped in dry technical satire.
+
+### 6. Zero-Network Simulation Mode
+Includes a built-in synthetic census engine (`stadtnuke.py demo`) that generates mathematically accurate host distributions, CVE catalogs, and port exposures for air-gapped environments, CI pipelines, and live demonstrations.
+
+---
+
+## Command-Line Reference
+
+WhyNot-StadtNuke features a unified CLI entrypoint via `stadtnuke.py`:
+
+```
+usage: stadtnuke.py [-h] {scan,demo,map,merge,report,web} ...
+```
+
+### 1. Network Census Scan
+
+```bash
+# Scan a city using built-in subnet database
+python3 stadtnuke.py scan --city "Munich" --max-ips 50 --map
+
+# Scan an entire country allocation
+python3 stadtnuke.py scan --country "BD" --max-ips 30 --map
+
+# Scan a specific Autonomous System (ISP/Telco)
+python3 stadtnuke.py scan --asn "AS45609" --map
+
+# Scan a direct CIDR subnet prefix
+python3 stadtnuke.py scan --cidr "129.187.0.0/16" --map
+```
+
+### 2. Offline Simulation Demo
+
+```bash
+# Generate simulated census with interactive map (zero network required)
+python3 stadtnuke.py demo --city "Munich" --count 40 --vuln-ratio 0.35
+```
+
+### 3. Geospatial Map Generation
+
+```bash
+# Render map from an existing JSON scan
+python3 stadtnuke.py map --input munich_stadtnuke.json --output munich_map.html
+```
+
+### 4. Global Map Merger
+
+```bash
+# Merge multiple regional scans into one global world map
+python3 stadtnuke.py merge munich_stadtnuke.json tokyo_stadtnuke.json --output GLOBAL_MAP.html
+```
+
+### 5. Sarcastic Defense Report
+
+```bash
+# Print detailed technical audit and sarcastic assessment
+python3 stadtnuke.py report munich_stadtnuke.json
+```
+
+### 6. Tactical Web Dashboard
+
+```bash
+# Start local web radar
+python3 stadtnuke.py web --port 8080 --host 127.0.0.1
+```
+
+---
+
+## Legacy Script Compatibility
+
+For existing workflows and backward compatibility, all original scripts have been refactored into thin wrappers routing directly to the core engine:
+
+| Legacy Script | Description | Unified Equivalent |
+|---|---|---|
+| `stadtnuke.py` | Core city scanner | `python3 stadtnuke.py scan --city Munich` |
+| `stadtnuke_ultimate.py` | Dynamic city scanner | `python3 stadtnuke.py scan --city <City>` |
+| `stadtnuke_worldwide.py` | Country / ASN scanner | `python3 stadtnuke.py scan --country <Code>` |
+| `make_map.py` | Munich map generator | `python3 stadtnuke.py map --input Munich_stadtnuke.json` |
+| `make_map_ultimate.py` | Custom city map generator | `python3 stadtnuke.py map --input <File>` |
+| `map_worldwide.py` | Country map generator | `python3 stadtnuke.py map --input <File>` |
+| `merge_all_maps.py` | Global world map merger | `python3 stadtnuke.py merge *.json` |
+
+---
+
+## Project Structure
+
+```
+WhyNot-StadtNuke/
+├── stadtnuke.py              # Master CLI entrypoint
+├── stadtnuke_core.py         # Subnet resolution, sampling, scanning & risk scoring
+├── stadtnuke_map.py          # Folium & Leaflet geospatial clustering engine
+├── web_app.py                # FastAPI backend with REST API & WebSocket streaming
+├── web/                      # Tactical web radar single-page application
+│   ├── index.html            # Web dashboard interface
+│   ├── style.css             # Tactical dark-cyberpunk stylesheet
+│   └── app.js                # Leaflet map controller & WebSocket client
+├── data/                     # Offline intelligence registries
+│   ├── subnets.json          # 100+ cities and country IP allocations
+│   └── ports.json            # Sensitive port signatures, weights & roast templates
+├── tests/                    # Automated pytest test suite
+│   └── test_stadtnuke.py     # 16 unit and integration test specifications
+├── pyproject.toml            # PEP 517/621 packaging metadata
+├── .github/workflows/ci.yml  # Automated CI/CD testing pipeline
+├── README.md                 # Technical framework documentation
+└── VERIFICATION_REPORT.md    # Empirical test logs & validation telemetry
+```
+
+---
+
+## Installation & Setup
+
+### Requirements
 - Python 3.9+
-- Kali Linux / Ubuntu / Debian (any distro works)
+- Linux (Debian, Ubuntu, Kali, Arch), macOS, or Windows
 
-### Installation
+### Setup
 
 ```bash
 git clone https://github.com/Abdullah-Al-Raju/WhyNot-StadtNuke.git
 cd WhyNot-StadtNuke
-python3 -m venv venv
-source venv/bin/activate
-pip install requests folium
-Usage Examples
-1. Scan a whole country
-bash
-python stadtnuke_worldwide.py --country "Bangladesh"
-python map_worldwide.py --json Country_Bangladesh_worldwide.json --country "Bangladesh"
-firefox bangladesh_worldwide_map.html
-2. Scan by ISP (ASN)
-bash
-python stadtnuke_worldwide.py --asn "AS45609"   # Grameenphone Bangladesh
-3. Merge ALL scans into ONE global map
-bash
-python merge_all_maps.py
-firefox GLOBAL_STADTNUKE_MAP.html
-4. Original city scanner (Munich demo)
-bash
-python stadtnuke.py
-python make_map.py
-firefox Munich_stadtnuke_map.html
-Example Output (Bangladesh scan)
-text
-💥 WhyNot-StadtNuke WORLDWIDE – scanning Country: Bangladesh...
-[*] Looking up IP ranges for country: Bangladesh...
-    Found range: 103.15.244.0/22
-    Found range: 114.130.0.0/16
-[*] Scanning 103.15.244.0/22...
-   Found 12 devices
+python3 -m pip install -e .
+```
 
-==================================================
-📢 WhyNot-StadtNuke REPORT for Country: Bangladesh
-   Devices found: 47
-   Vulnerable devices: 3
-   ✅ Scan complete. Not terrible.
-==================================================
-🗺️ How It Works
-text
-User Input (--country "Bangladesh")
-         ↓
-RIPE Stat API → Returns all IP ranges for Bangladesh
-         ↓
-InternetDB (Shodan) → Queries each IP for ports & vulnerabilities
-         ↓
-JSON Output + Sarcastic Report
-         ↓
-Folium Map → Interactive HTML map
-         ↓
-Global Merger → Combines all countries into one world map
-APIs Used (100% Free)
-API	Purpose	Cost
-InternetDB	Ports, vulnerabilities, hostnames	$0, no key
-RIPE Stat	Country → IP ranges	$0, no key
-ip-api.com	IP geolocation	$0, 45 req/min
-Nominatim	Country coordinates	$0, rate-limited
-🌍 Supported Countries (Any country works!)
-The tool automatically fetches IP ranges for any country via RIPE Stat API:
+To run the automated test suite:
 
-bash
-python stadtnuke_worldwide.py --country "Japan"
-python stadtnuke_worldwide.py --country "India"
-python stadtnuke_worldwide.py --country "Germany"
-python stadtnuke_worldwide.py --country "Brazil"
-python stadtnuke_worldwide.py --country "Australia"
-If a country has no ranges in RIPE, the tool falls back to test ranges and prompts you to add ranges manually via city_ranges.json.
+```bash
+pytest -v tests/
+```
 
-📁 Project Structure
-text
-WhyNot-StadtNuke/
-├── stadtnuke.py              # Original city scanner (Munich demo)
-├── stadtnuke_ultimate.py     # City scanner with city_ranges.json
-├── stadtnuke_worldwide.py    # 🌍 WORLDWIDE – scan any country/ASN
-├── make_map.py               # Map for Munich demo
-├── make_map_ultimate.py      # Map for city scans
-├── map_worldwide.py          # Map for country scans
-├── merge_all_maps.py         # 🌍 GLOBAL MAP – merge everything
-├── city_ranges.json          # Manual ranges for cities (contributions welcome)
-├── README.md                 # This file
-├── LICENSE                   # MIT License
-├── .gitignore                # Ignore venv, caches
-├── screenshot.png            # Demo: Bangladesh map
-└── screenshot-worldwide.png  # Demo: Global merged map
-🤝 Contributing
-Want to add IP ranges for your city? Edit city_ranges.json and submit a pull request:
+---
 
-json
-{
-  "Munich": ["129.187.0.0/16"],
-  "YourCity": ["1.2.3.0/24", "4.5.6.0/24"]
-}
-🧠 Why "StadtNuke"?
-Stadt = German for city (respect for Ausbildung target country)
+## Author & Attribution
 
-Nuke = Overkill is underrated
+Designed and engineered by:
 
-WhyNot‑ = Humble confidence. Why not build a city nuke on a Tuesday?
+**Abduallah Al Raju**  
+*Network Engineer, Systems Integrator & Security Analyst*  
+GitHub: [https://github.com/Abdullah-Al-Raju](https://github.com/Abdullah-Al-Raju)  
+Profile Repository: [https://github.com/Abdullah-Al-Raju/Abdullah-Al-Raju](https://github.com/Abdullah-Al-Raju/Abdullah-Al-Raju)
 
-📜 License
-MIT – Do whatever you want. Just keep the sarcasm intact.
+---
 
-👤 Author
-Abdullah Al Raju (Raju) – Aspiring network engineer / SOC analyst
-Building extreme tools for a German Ausbildung.
+## License
 
-https://img.shields.io/badge/GitHub-WhyNot--StadtNuke-black
-
-🙏 Acknowledgements
-Shodan InternetDB – Unlimited free IP data
-
-RIPE Stat – Country to IP range mapping
-
-ip-api.com – Free geolocation
-
-Folium – Leaflet maps in Python
-
-Nominatim – OpenStreetMap geocoding
-
-⭐ Star this repo if you want to nuke your own country.
+This project is licensed under the MIT License. See [License](License) for details.

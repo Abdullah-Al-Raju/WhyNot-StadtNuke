@@ -1,0 +1,48 @@
+{
+  "ports": {
+    "21": {"service": "FTP", "risk": "Medium", "weight": 20, "roast": "Unencrypted FTP in production? It is not 1995 anymore."},
+    "22": {"service": "SSH", "risk": "Low", "weight": 5, "roast": "SSH exposed to the entire internet. Hope your fail2ban is running overtime."},
+    "23": {"service": "Telnet", "risk": "Critical", "weight": 50, "roast": "Telnet in plain text! Password 'admin' transmitted in cleartext for all routers to enjoy."},
+    "25": {"service": "SMTP", "risk": "Medium", "weight": 15, "roast": "Mail relay waiting to send unsolicited pharmaceuticals."},
+    "53": {"service": "DNS", "risk": "Low", "weight": 10, "roast": "Open DNS resolver ready for an amplification party."},
+    "80": {"service": "HTTP", "risk": "Low", "weight": 5, "roast": "Standard web server. Hopefully no default Apache splash page."},
+    "104": {"service": "DICOM", "risk": "Critical", "weight": 60, "roast": "Unauthenticated hospital DICOM medical imaging exposed. HIPAA audit imminent."},
+    "110": {"service": "POP3", "risk": "Medium", "weight": 15, "roast": "Ancient mail protocol pulling unencrypted credentials."},
+    "143": {"service": "IMAP", "risk": "Medium", "weight": 15, "roast": "Standard IMAP service."},
+    "443": {"service": "HTTPS", "risk": "Low", "weight": 0, "roast": "Encrypted web service. At least one person checked the security checklist."},
+    "445": {"service": "SMB", "risk": "Critical", "weight": 65, "roast": "Direct SMB port 445 exposed. EternalBlue WannaCry anniversary celebration."},
+    "502": {"service": "Modbus", "risk": "Critical", "weight": 70, "roast": "Industrial SCADA Modbus PLC on the public internet. Water plant speedrun any%."},
+    "554": {"service": "RTSP", "risk": "High", "weight": 35, "roast": "Open RTSP stream. The whole internet is currently streaming your security camera."},
+    "1433": {"service": "MSSQL", "risk": "High", "weight": 40, "roast": "Microsoft SQL Server exposed directly without VPN. 'sa' password is 'Password123'?"},
+    "1521": {"service": "Oracle", "risk": "High", "weight": 40, "roast": "Enterprise database hanging out in the public subnet."},
+    "1883": {"service": "MQTT", "risk": "High", "weight": 35, "roast": "Unencrypted IoT telemetry broadcast. Turn off someone's smart lightbulb."},
+    "3306": {"service": "MySQL", "risk": "High", "weight": 35, "roast": "MySQL listening on 0.0.0.0. Grant all privileges on *.* to 'root'@'%'?"},
+    "3389": {"service": "RDP", "risk": "High", "weight": 40, "roast": "Exposed Windows Remote Desktop. BlueKeep says hello."},
+    "5432": {"service": "PostgreSQL", "risk": "High", "weight": 35, "roast": "Production Postgres open to the wild. Praying pg_hba.conf is locked down."},
+    "5555": {"service": "ADB", "risk": "Critical", "weight": 65, "roast": "Android Debug Bridge exposed without auth. Free root shell on an IoT TV box."},
+    "5900": {"service": "VNC", "risk": "High", "weight": 45, "roast": "Remote desktop VNC server. Usually configured with 6-character passwords or none."},
+    "6379": {"service": "Redis", "risk": "Critical", "weight": 60, "roast": "Unauthenticated Redis in-memory cache. Instant write-to-authorized_keys exploit."},
+    "8080": {"service": "HTTP-Proxy", "risk": "Medium", "weight": 10, "roast": "Alternative HTTP port. Spring Boot actuator endpoints probably exposed."},
+    "8443": {"service": "HTTPS-Alt", "risk": "Low", "weight": 5, "roast": "Alternative SSL port."},
+    "9200": {"service": "Elasticsearch", "risk": "High", "weight": 45, "roast": "Open Elasticsearch cluster. All customer records indexed and unauthenticated."},
+    "27017": {"service": "MongoDB", "risk": "High", "weight": 45, "roast": "MongoDB on default port. Ransomware note arriving in 3... 2... 1..."}
+  },
+  "overall_roasts": {
+    "critical": [
+      "This network has more holes than Swiss cheese at a shooting range.",
+      "A script kiddie with a dial-up modem could compromise this in 4 minutes.",
+      "The sysadmin clearly believes security through positive affirmations works."
+    ],
+    "high": [
+      "Several critical services are asking for trouble. Patch schedule: Next decade.",
+      "Not completely defenseless, but definitely leaving the front door unlocked with a welcome sign."
+    ],
+    "medium": [
+      "A few questionable ports are open. Moderate digital hygiene issues detected."
+    ],
+    "clean": [
+      "No critical ports or CVEs detected. Either highly hardened or very boring.",
+      "Surprisingly clean attack surface. The sysadmin might actually be competent."
+    ]
+  }
+}
